@@ -62,7 +62,7 @@ function App() {
 <RouterProvider router={router}/>
          
          
-         {/* <BrowserRouter>
+         <BrowserRouter>
          
              <ProtectedRoute path='/' exact component={Home} />
              <Route path='/login' exact component={Login} />
@@ -73,7 +73,7 @@ function App() {
              <ProtectedRoute path='/editcar/:carid' exact component={EditCar} />
              <ProtectedRoute path='/admin' exact component={AdminHome} />
          
-         </BrowserRouter> */}
+         </BrowserRouter>
 
     </div>
   );
