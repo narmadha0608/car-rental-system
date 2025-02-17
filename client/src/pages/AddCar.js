@@ -35,50 +35,95 @@ function AddCar() {
     //      console.log(values)
     // }
 
-    function onFinish(values) {
-        if (file) {
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('upload_preset', 'car'); // If using services like Cloudinary
-            formData.append('cloud_name', 'dn2g52ol9');
+    // function onFinish(values) {
+    //     if (file) {
+    //         const formData = new FormData();
+    //         formData.append('file', file);
+    //         formData.append('upload_preset', 'car'); // If using services like Cloudinary
+    //         formData.append('cloud_name', 'dn2g52ol9');
 
-            // Example: Upload to Cloudinary or a custom backend
-            fetch('https://api.cloudinary.com/v1_1/dn2g52ol9/car', {
-                method: 'POST',
-                body: formData,
-            })
-                .then((res) => res.json())
-                .then((data) => {
-                    console.log(data);
+    //         // Example: Upload to Cloudinary or a custom backend dn2g52ol9
+    //         fetch('https://api.cloudinary.com/v1_1/dn2g52ol9/car', {
+    //             method: 'POST',
+    //             body: formData,
+    //             mode:"no-cors"
+    //         })
+    //             .then((res) => res.json())
+    //             .then((data) => {
+    //                 console.log(data);
                     
-                    values.image = data.url; // Update the image field with the uploaded URL
+    //                 values.image = data.url; // Update the image field with the uploaded URL
+    //                 values.bookedTimeSlots = [];
+    //                 dispatch(addCar(values));
+    //                 // message.success('Car added successfully!');
+    //             })
+    //             .catch((error) => {
+    //                 // message.error('Image upload failed!');
+    //                 console.error(error);
+    //             });
+    //     } else {
+    //         // message.error('Please upload an image file.');
+    //     }
+    // }
+
+    function onFinish(values) {
+        if (!file) {
+            console.error("Please upload an image file.");
+            return;
+        }
+    
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', 'car_upload'); // ✅ Ensure this preset exists in Cloudinary
+    
+        fetch('https://api.cloudinary.com/v1_1/dn2g52ol9/image/upload', {
+            method: 'POST',
+            body: formData,
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                console.log("Cloudinary Response:", data);
+    
+                if (data.secure_url) {
+                    values.image = data.secure_url; // ✅ Use `secure_url` instead of `url`
                     values.bookedTimeSlots = [];
                     dispatch(addCar(values));
-                    // message.success('Car added successfully!');
-                })
-                .catch((error) => {
-                    // message.error('Image upload failed!');
-                    console.error(error);
-                });
-        } else {
-            // message.error('Please upload an image file.');
-        }
+                    console.log("Car added:", values);
+                } else {
+                    console.error("Cloudinary upload failed:", data);
+                }
+            })
+            .catch((error) => {
+                console.error("Image upload error:", error);
+            });
     }
+    
+
+
+    // const handleFileChange = (info) => {
+    //     if (info.fileList && info.fileList.length > 0) {
+    //         const latestFile = info.fileList[info.fileList.length - 1].originFileObj;
+    //         if (latestFile) {
+    //             setFile(latestFile); // Update the state with the latest file
+    //         } else {
+    //             // message.error('Failed to retrieve the file.');
+    //         }
+    //     } else {
+    //         setFile(null); // Clear the file if none is selected
+    //         // message.warning('No file selected.');
+    //     }
+    // };
 
 
     const handleFileChange = (info) => {
-        if (info.fileList && info.fileList.length > 0) {
+        if (info.fileList.length > 0) {
             const latestFile = info.fileList[info.fileList.length - 1].originFileObj;
-            if (latestFile) {
-                setFile(latestFile); // Update the state with the latest file
-            } else {
-                // message.error('Failed to retrieve the file.');
-            }
+            setFile(latestFile);
         } else {
-            setFile(null); // Clear the file if none is selected
-            // message.warning('No file selected.');
+            setFile(null);
         }
     };
+    
 
     return (
         <DefaultLayout>

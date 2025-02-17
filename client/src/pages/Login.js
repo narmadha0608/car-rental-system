@@ -23,9 +23,10 @@ function Login() {
 
                 <Col lg={16} style={{position: 'relative'}}>
                     <img 
-                    className='w-100'
+                    className='w-100 register-img'
                     data-aos='slide-right'
                     data-aos-duration='1500'
+
                     src="https://images.unsplash.com/photo-1584936684506-c3a7086e8212?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1694&q=80"/>
                      <h1 className='login-logo'>Car Rental</h1>
                 </Col>
