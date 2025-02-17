@@ -8,6 +8,7 @@ import UserBookings from './pages/UserBookings';
 import AddCar from './pages/AddCar';
 import AdminHome from './pages/AdminHome';
 import EditCar from './pages/EditCar';
+import AdminRegister from './pages/Admin/admin';
 
 export const ProtectedRoute = ({ children }) => {
   if (localStorage.getItem('user')) {
@@ -50,11 +51,15 @@ const router = createBrowserRouter([
   {
     path: '/admin',
     element: <ProtectedRoute><AdminHome /></ProtectedRoute>,
+  },
+  {
+    path: '/admin/register',
+    element: <ProtectedRoute><AdminRegister /></ProtectedRoute>,
   }
 ]);
 
 function App() {
-  return (
+  return (        
     <div className="App">
       <RouterProvider router={router} /> {/* ✅ This handles all routing */}
     </div>

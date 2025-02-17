@@ -2,19 +2,21 @@ import React from "react";
 import { Row, Col, Form, Input } from "antd";
 import { Link } from "react-router-dom";
 import {useDispatch , useSelector} from 'react-redux'
-import { userRegister } from "../redux/actions/userActions";
+// import { userRegister } from "../redux/actions/userActions";
 import AOS from 'aos';
-import Spinner from '../components/Spinner';
+// import Spinner from '../components/Spinner';
 import 'aos/dist/aos.css'; // You can also use <link> for styles
+import { userRegister } from "../../redux/actions/userActions";
+import Spinner from "../../components/Spinner";
 // ..
 AOS.init()
-function Register() {
+function AdminRegister() {
   const dispatch = useDispatch()
   const {loading} = useSelector(state=>state.alertsReducer)
     function onFinish(values) {
       console.log(values);
       
-           dispatch(userRegister({...values,role:"user"}))
+           dispatch(userRegister({...values,role:"admin"}))
            console.log(values)
     }
 
@@ -67,4 +69,4 @@ function Register() {
   );
 }
 
-export default Register;
+export default AdminRegister;
