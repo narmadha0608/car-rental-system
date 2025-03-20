@@ -9,13 +9,14 @@ import { bookCar } from "../redux/actions/bookingActions";
 import StripeCheckout from "react-stripe-checkout";
 import AOS from 'aos';
 import {
-  useLoaderData,
+  
+  useParams,
 } from "react-router-dom";
 
 import 'aos/dist/aos.css'; // You can also use <link> for styles
 const { RangePicker } = DatePicker;
 function BookingCar() {
-  const match = useLoaderData();
+  const match = useParams();
   const { cars } = useSelector((state) => state.carsReducer);
   const { loading } = useSelector((state) => state.alertsReducer);
   const [car, setcar] = useState({});
@@ -31,7 +32,7 @@ function BookingCar() {
     if (cars.length == 0) {
       dispatch(getAllCars());
     } else {
-      setcar(cars.find((o) => o._id == match));
+      setcar(cars.find((o) => o._id == match.carid));
     }
   }, [cars]);
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import DefaultLayout from "../components/DefaultLayout";
 import { getAllCars } from "../redux/actions/carsActions";
-import { Col, Row, DatePicker, Button, Card } from "antd";
+import { Col, Row, DatePicker, Button, Card, Input } from "antd";
 import { Link } from "react-router-dom";
 import Spinner from "../components/Spinner";
 import moment from "moment";
@@ -13,6 +13,7 @@ function Home() {
   const { cars } = useSelector((state) => state.carsReducer);
   const { loading } = useSelector((state) => state.alertsReducer);
   const [totalCars, setTotalcars] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -41,6 +42,12 @@ function Home() {
     setTotalcars(filteredCars);
   }
 
+  function handleSearch(e) {
+    const value = e.target.value.toLowerCase();
+    setSearchTerm(value);
+    setTotalcars(cars.filter((car) => car.name.toLowerCase().includes(value)));
+  }
+
   return (
     <DefaultLayout>
       <div className="home-header">
@@ -50,6 +57,12 @@ function Home() {
           format="MMM DD yyyy HH:mm" 
           onChange={setFilter}
           className="date-picker"
+        />
+        <Input
+          placeholder="Search cars..."
+          onChange={handleSearch}
+          value={searchTerm}
+          className="search-box"
         />
       </div>
 
@@ -77,7 +90,6 @@ function Home() {
         ))}
       </Row>
 
-      {/* 🌟 Stylish CSS */}
       <style jsx="true">{`
         .home-header {
           text-align: center;
@@ -91,6 +103,14 @@ function Home() {
           width: 100%;
           max-width: 400px;
           margin-top: 10px;
+        }
+        .search-box {
+          width: 100%;
+          max-width: 400px;
+          margin-top: 10px;
+          padding: 8px;
+          border-radius: 5px;
+          border: 1px solid #ccc;
         }
         .car-card {
           border-radius: 10px;

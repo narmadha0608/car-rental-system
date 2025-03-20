@@ -16,6 +16,8 @@ dotenv.config();
 app.use('/api/cars/' , require('./routes/carsRoute'))
 app.use('/api/users/' , require('./routes/usersRoute'))
 app.use('/api/bookings/' , require('./routes/bookingsRoute'))
+app.use('/api/admin/' , require('./routes/adminRoute'))
+// /api/bookings/getallbookings
 
 
 const path = require('path')
