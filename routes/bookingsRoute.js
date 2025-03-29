@@ -3,6 +3,8 @@ const router = express.Router();
 const Booking = require("../models/bookingModel");
 const Car = require("../models/carModel");
 const { v4: uuidv4 } = require("uuid");
+const { sendforuserEmail, sendforadminEmail } = require("../utils/email");
+const userModel = require("../models/userModel");
 const stripe = require("stripe")(
   "sk_test_51NFtVGSAZAXtdYSkBaDemNewFODLyLvAZ4Cp8oCxI2m1ecvfG2C1cNpm1B6k6lwIQfD2f9Hxt53gG2hNGExnFVK100raNTKWo4"
 );
@@ -37,6 +39,37 @@ router.post("/bookcar", async (req, res) => {
       car.bookedTimeSlots.push(req.body.bookedTimeSlots);
 
       await car.save();
+
+      console.log(req.body);
+      
+
+      const bookingDetails = {
+        bookingId: newbooking._id,
+        userId: req.body.user,
+        carId: req.body.car,
+        userName: req.body.token.card.name,
+        carModel: req.body,
+        fromTime: req.body.bookedTimeSlots.from,
+        toTime: req.body.bookedTimeSlots.to,
+        totalHours: req.body.totalHours,
+        totalAmount: req.body.totalAmount,
+        transactionId: req.body.transactionId,
+        driverRequired:req.body.driverRequired
+    };
+    
+   
+
+   await sendforuserEmail(req.body.token.email, bookingDetails);
+   const user = await userModel.find()
+
+   user.map(async (user) => {
+    if(user.role === 'admin'){
+      await sendforadminEmail(user.username, bookingDetails);
+    }
+  }
+
+  )
+
       res.send("Your booking is successfull");
     // } else {
     //   return res.status(400).json(error);

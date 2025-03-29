@@ -6,10 +6,11 @@ import Spinner from "../components/Spinner";
 import { addCar, editCar, getAllCars } from "../redux/actions/carsActions";
 import {
   useLoaderData,
+  useParams,
 } from "react-router-dom";
 
 function EditCar() {
-  const match = useLoaderData();
+  const match = useParams();
   const { cars } = useSelector((state) => state.carsReducer);
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.alertsReducer);
@@ -20,7 +21,7 @@ function EditCar() {
       dispatch(getAllCars());
     } else {
       settotalcars(cars);
-      setcar(cars.find((o) => o._id == match));
+      setcar(cars.find((o) => o._id == match.carid));
       console.log(car);
     }
   }, [cars]);

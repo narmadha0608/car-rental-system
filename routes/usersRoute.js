@@ -36,5 +36,40 @@ router.post("/register", async(req, res) => {
 });
 
 
+router.get("/allusers", async(req, res) => {
+
+    
+
+    try {
+        const user = await User.find()
+       
+        res.send({message:'All users fetched successfully', users:user})
+
+    } catch (error) {
+      return res.status(400).json(error);
+    }
+
+});
+
+router.delete("/:id", async(req, res) => {
+
+    
+
+    try {
+        const user = await User.findByIdAndDelete(params.id)
+       
+        res.send({message:'All users deleted successfully'})
+
+    } catch (error) {
+      return res.status(400).json(error);
+    }
+
+});
+
+
+
+
+
+
 module.exports = router
 
