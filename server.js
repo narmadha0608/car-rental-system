@@ -17,7 +17,9 @@ app.use('/api/cars/' , require('./routes/carsRoute'))
 app.use('/api/users/' , require('./routes/usersRoute'))
 app.use('/api/bookings/' , require('./routes/bookingsRoute'))
 app.use('/api/admin/' , require('./routes/adminRoute'))
-// /api/bookings/getallbookings
+const feedbackRoutes = require("./routes/feedbackRoutes");
+app.use("/api/feedbacks", feedbackRoutes);
+// 
 
 
 const path = require('path')

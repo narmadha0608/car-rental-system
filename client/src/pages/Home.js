@@ -2,18 +2,30 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import DefaultLayout from "../components/DefaultLayout";
 import { getAllCars } from "../redux/actions/carsActions";
-import { Col, Row, DatePicker, Button, Card, Input } from "antd";
+import { Col, Row, DatePicker, Button, Card, Input, Modal, Rate, message } from "antd";
 import { Link } from "react-router-dom";
 import Spinner from "../components/Spinner";
 import moment from "moment";
+import axios from "axios";
 
 const { RangePicker } = DatePicker;
 
 function Home() {
   const { cars } = useSelector((state) => state.carsReducer);
   const { loading } = useSelector((state) => state.alertsReducer);
+  // const { user } = useSelector((state) => state.userReducer); // Assuming user info is stored in Redux
   const [totalCars, setTotalcars] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+
+  // const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const [reviewModalVisible, setReviewModalVisible] = useState(false);
+  const [selectedCar, setSelectedCar] = useState(null);
+  const [reviews, setReviews] = useState([]);
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -47,6 +59,40 @@ function Home() {
     setSearchTerm(value);
     setTotalcars(cars.filter((car) => car.name.toLowerCase().includes(value)));
   }
+
+  const openReviewModal = async (car) => {
+    setSelectedCar(car);
+    setReviewModalVisible(true);
+    try {
+      const res = await axios.get(`/api/feedbacks/car/${car._id}`);
+      setReviews(res.data);
+    } catch (err) {
+      message.error("Failed to load reviews");
+    }
+  };
+
+  const handleReviewSubmit = async () => {
+    try {
+      if (!rating || !comment) {
+        return message.warning("Please provide rating and comment");
+      }
+
+      await axios.post("/api/feedbacks/add", {
+        user: user?._id,
+        username: user?.username,
+        car: selectedCar._id,
+        rating,
+        comment
+      });
+
+      message.success("Review submitted!");
+      setComment("");
+      setRating(0);
+      openReviewModal(selectedCar); // Refresh reviews
+    } catch (err) {
+      message.error("Error submitting review");
+    }
+  };
 
   return (
     <DefaultLayout>
@@ -84,76 +130,50 @@ function Home() {
                     Book Now
                   </Link>
                 </Button>
+                <Button type="link" onClick={() => openReviewModal(car)}>
+                  ⭐ View/Add Reviews
+                </Button>
               </div>
             </Card>
           </Col>
         ))}
       </Row>
 
-      <style jsx="true">{`
-        .home-header {
-          text-align: center;
-          margin-bottom: 20px;
-          background: linear-gradient(135deg, #1890ff, #001529);
-          padding: 20px;
-          border-radius: 8px;
-          color: white;
-        }
-        .date-picker {
-          width: 100%;
-          max-width: 400px;
-          margin-top: 10px;
-        }
-        .search-box {
-          width: 100%;
-          max-width: 400px;
-          margin-top: 10px;
-          padding: 8px;
-          border-radius: 5px;
-          border: 1px solid #ccc;
-        }
-        .car-card {
-          border-radius: 10px;
-          box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-          transition: all 0.3s ease-in-out;
-          overflow: hidden;
-        }
-        .car-card:hover {
-          transform: translateY(-5px);
-          box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.15);
-        }
-        .car-image {
-          height: 180px;
-          object-fit: cover;
-          border-top-left-radius: 10px;
-          border-top-right-radius: 10px;
-        }
-        .car-details {
-          text-align: center;
-          padding: 10px;
-        }
-        .car-name {
-          font-size: 18px;
-          font-weight: bold;
-          color: #1890ff;
-        }
-        .rent-price {
-          font-size: 16px;
-          color: #555;
-        }
-        .book-btn {
-          width: 100%;
-          background: linear-gradient(90deg, #ff4d4f, #ff7b7b);
-          border: none;
-          color: white;
-          font-weight: bold;
-          padding: 10px;
-          border-radius: 5px;
-        }
-        .book-btn:hover {
-          opacity: 0.9;
-        }
-      `}</style>
+      {/* Review Modal */}
+      <Modal
+        title={`Reviews for ${selectedCar?.name}`}
+        open={reviewModalVisible}
+        onCancel={() => setReviewModalVisible(false)}
+        footer={null}
+      >
+        <div>
+          <h4>Existing Reviews</h4>
+          {reviews.length === 0 ? (
+            <p>No reviews yet.</p>
+          ) : (
+            reviews.map((rev, i) => (
+              <div key={i} style={{ marginBottom: 15, borderBottom: "1px solid #eee", paddingBottom: 8 }}>
+                <strong>{rev.username}</strong>
+                <Rate disabled defaultValue={rev.rating} />
+                <p>{rev.comment}</p>
+              </div>
+            ))
+          )}
+
+          <h4>Add Your Review</h4>
+          <Rate onChange={setRating} value={rating} />
+          <Input.TextArea
+            rows={3}
+            placeholder="Your review..."
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            style={{ marginTop: 8 }}
+          />
+          <Button type="primary" block onClick={handleReviewSubmit} style={{ marginTop: 10 }}>
+            Submit Review
+          </Button>
+        </div>
+      </Modal>
     </DefaultLayout>
   );
 }
