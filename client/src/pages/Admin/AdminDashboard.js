@@ -18,6 +18,7 @@ import Vehiclemanagement from "./Vehiclemanagement";
 import BookingDashboard from "./BookingManagemet";
 import UsersManagement from "./UserManagement";
 import MainDashboard from "./MainDashboard";
+import AllReviews from "./ReviewMnagement";
 
 const drawerWidth = 240;
 
@@ -46,7 +47,7 @@ export default function AdminDashboard() {
       case "inventory":
         return <Vehiclemanagement />;
       case "feedback":
-        return <FeedbackPage />;
+        return <AllReviews />;
       case "users":
         return <UsersManagement />;
       default:
