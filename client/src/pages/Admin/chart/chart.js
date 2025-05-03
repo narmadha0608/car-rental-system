@@ -64,7 +64,7 @@ const options = {
     <div style={{ width: "500px", height: "500px", margin: "auto" }}>
       <Pie data={data} options={options} />
     </div>
-  );
+  );    
 };
 
 export default PieChartComponent;
