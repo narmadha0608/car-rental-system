@@ -5,6 +5,8 @@ import { motion } from "framer-motion";
 import { AttachMoney, DirectionsCar, People, ListAlt } from "@mui/icons-material";
 import axios from "axios";
 import PieChartComponent from "./chart/chart";
+import DashboardChartComponent from "./chart/chart2";
+import DashboardCharts from "./chart/chart3";
 
 export default function MainDashboard() {
     const [data, setData] = useState(null);
@@ -31,57 +33,40 @@ export default function MainDashboard() {
 
     return (
         <Box sx={{ p: 3 }}>
-            <Grid container spacing={3}>
-                {stats.map((stat, index) => (
-                    <Grid item xs={12} sm={6} md={3} key={index}>
-                        <motion.div whileHover={{ scale: 1.05 }}>
-                            <Card sx={{ backgroundColor: stat.bgColor, color: "white", textAlign: "center", p: 3, borderRadius: 3, boxShadow: 5 }}>
-                                <Box sx={{ display: "flex", justifyContent: "center", mb: 1 }}>{stat.icon}</Box>
-                                <Typography variant="h6">{stat.title}</Typography>
-                                <Typography variant="h4" fontWeight="bold">{stat.value}</Typography>
-                            </Card>
-                        </motion.div>
-                    </Grid>
-                ))}
-
-                <Grid item xs={12} md={6}>
-                    <Paper sx={{ p: 3, borderRadius: 3, boxShadow: 5 }}>
-                        <Typography variant="h6" gutterBottom>Revenue & Bookings</Typography>
-                        {/* <ResponsiveContainer width="100%" height={800}>
-                            <PieChart width={800} height={800}>
-                                <Tooltip />
-                                <Legend />
-                                <Pie
-                                    data={barChartData}
-                                    dataKey="revenue"
-                                    nameKey="name"
-                                    cx="50%"
-                                    cy="50%"
-                                    outerRadius={350}
-                                    fill="#ff512f"
-                                    label 
-                                    height={1400}
-                                    width={1400}
-                                />
-                                <Pie
-                                    data={barChartData}
-                                    dataKey="bookings"
-                                    nameKey="name"
-                                    cx="50%"
-                                    cy="50%"
-                                    innerRadius={250}
-                                    outerRadius={360}
-                                    fill="#36d1dc"
-                                    label
-                                    height={1400}
-                                    width={1400}
-                                />
-                            </PieChart>
-                        </ResponsiveContainer> */}
-                        <PieChartComponent data={data}/>
-                    </Paper>
+        <Grid container spacing={3} alignItems="stretch">
+            {stats.map((stat, index) => (
+                <Grid item xs={12} sm={6} md={3} key={index}>
+                    <motion.div whileHover={{ scale: 1.05 }} style={{ height: '100%' }}>
+                        <Card sx={{ 
+                            backgroundColor: stat.bgColor, 
+                            color: "white", 
+                            textAlign: "center", 
+                            p: 3, 
+                            borderRadius: 3, 
+                            boxShadow: 5,
+                            height: '100%'
+                        }}>
+                            <Box sx={{ display: "flex", justifyContent: "center", mb: 1 }}>{stat.icon}</Box>
+                            <Typography variant="h6">{stat.title}</Typography>
+                            <Typography variant="h4" fontWeight="bold">{stat.value}</Typography>
+                        </Card>
+                    </motion.div>
                 </Grid>
+            ))}
+    
+            <Grid item xs={12} md={6}>
+                <Paper sx={{ p: 3, borderRadius: 3, boxShadow: 5, height: "100%" }}>
+                    <Typography variant="h6" gutterBottom>Revenue & Bookings</Typography>
+                    <PieChartComponent data={data}/>
+                    <DashboardChartComponent data={data}/>
+                </Paper>
             </Grid>
-        </Box>
+    
+            <Grid item xs={12} md={6}>
+                <DashboardCharts />
+            </Grid>
+        </Grid>
+    </Box>
+    
     );
 }
